@@ -1,0 +1,89 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>M&M</title>
+      <link rel="stylesheet" href="style.css">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <header class="header">
+      <a href="#" class="mm-logo-link"><span class="mm-logo">MorgAI</span></a>
+      <a href="#about-us-title"  class="aboutus">About Us</a>
+    </header>
+
+    <section id="enter-text">
+      <h2 id="entertext">MorgAI</h2>
+      <div class="slide-container">
+        <div class="slide fade" style="background-image: url('assets/hero-picture.jpeg');"></div>
+        <div class="slide fade" style="background-image: url('assets/hero-picture-2.jpeg');"></div>
+        <div class="slide fade" style="background-image: url('assets/hero-picture-3.webp');"></div>
+        <a class="prev" onclick="moveSlide(-1)">&#10094;</a>
+        <a class="next" onclick="moveSlide(1)">&#10095;</a>
+    </div>
+      
+    </section>
+
+    <section class="section-white">
+      <h1 id="first-text-box">Justice, powered by AI precision.</h1>
+      <h2 id="second-text-box">Always on. Always informed. Always ready to assist.</h2>
+      <p>Results may vary depending on your particular facts and circumstances.</p>
+    </section>
+
+    <section class="about-us">
+      <h1 id="about-us-title">How it works</h1>
+      <p id="about-us-info"></p>
+      <div class="container">
+        <div class="box" id="box1">
+          <p id="about-us-step">Step 1</p>
+          <h1>AI assessed claim</h1>
+          <p>With AI-driven analysis, your claim is assessed instantly and precisely.</p>
+        </div>
+      
+        <div class="box" id="box2">
+          <p id="about-us-step">Step 2</p>
+          <h1>AI generated summary</h1>
+          <p>Our advanced AI evaluates the details and provides a concise summary.</p>
+        </div>
+      
+        <div class="box" id="box3">
+          <p id="about-us-step">Step 3</p>
+          <h1>AI driven defense</h1>
+          <p>Empowered by AI algorithms, we ensure the best possible outcome for your case.</p>
+        </div>
+      </div>
+      <a href="#userInput" class="get-started-btn">Get Started</a>
+      
+    </section>
+    <section class="userInput">
+      <h1>User Input Here</h1>
+
+    </section>
+
+    <div class="footer">
+      <div class="footer-content">
+          <span class="footer-logo">MorgAI</span>
+          <span class="social-media">
+              Find us on social media
+              <div class="social-icons">
+                  <a href="https://www.facebook.com/MMForthePeople/" target="_blank"><img src="assets/facebook-pic.png" alt="Facebook"></a>
+                  <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fforthepeople%2F%3Fhl%3Den" target="_blank"><img src="assets/instagram-pic.png" alt="Instagram"></a>
+                  <a href="https://www.linkedin.com/company/morgan-&-morgan-llc" target="_blank"><img src="assets/linkedin-pic.png" alt="LinkedIn"></a>
+                  <a href="https://twitter.com/forthepeople?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor" target="_blank"><img src="assets/twitter-pic.png" alt="Twitter"></a>
+              </div>
+          </span>
+          <span class="copyright">&copy; 2023 MorgAI. All rights reserved.</span>
+      </div>
+  </div>
+  
+    </section>
+    <script src="style.js"></script>
+  </body>
+
+  </html>
