@@ -1,0 +1,13 @@
+.chat-row {
+    background-color: red;
+    display: flex;
+    margin: 5px;
+}
+
+.row-reverse {
+    flex-direction: row-reverse;
+}
+
+.human-bubble {
+    background: linear-gradient(135deg, rgb(0, 178, 255), rgb(8, 64, 143));
+}
