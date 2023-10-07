@@ -68,9 +68,9 @@ import os
 config = configparser.ConfigParser()
 config.read("config.ini")
 
-openai_api_key = config["OPENAI"]["OPENAI_API_KEY"]
-azure_key = config["AZURE"]["AZURE_KEY"]
-azure_endpoint = config["AZURE"]["AZURE_ENDPOINT"]
+openai_api_key = st.secrets["OPENAI"]["OPENAI_API_KEY"]
+azure_key = st.secrets["AZURE"]["AZURE_KEY"]
+azure_endpoint = st.secrets["AZURE"]["AZURE_ENDPOINT"]
 
 DOCUMENT_TYPES = [
     'Court Order',
@@ -190,7 +190,9 @@ def get_type_of_document(document_text: str) -> str:
     ])
 
     chain = LLMChain(
-        llm=OpenAI(temperature=0, openai_api_key=openai_api_key, model_name='gpt-3.5-turbo'), prompt=prompt
+        llm=OpenAI(temperature=0, openai_api_key=openai_api_key,
+        model_name='gpt-3.5-turbo'),
+        prompt=prompt
     )
 
     response = chain.run(document_text=document_text)
