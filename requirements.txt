@@ -2,3 +2,4 @@ langchain==0.0.173
 azure-ai-formrecognizer==3.3.0
 azure-common==1.1.28
 azure-core==1.29.4
+openai==0.27.8

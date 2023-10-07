@@ -25,42 +25,33 @@ How homeless do I look?
 
 '''
 
-import configparser
 
-import streamlit as st
 import os, tempfile
-
-from langchain.chat_models import ChatOpenAI
+import streamlit as st
 from langchain.prompts import *
-
 from langchain import LLMChain
+import configparser
+import openai
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 
-import os, tempfile
 import streamlit as st
 from langchain.llms.openai import OpenAI
 from langchain.vectorstores.chroma import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.chains.summarize import load_summarize_chain
 from langchain.document_loaders import PyPDFLoader
 from langchain.memory import ConversationSummaryMemory
 from langchain.chains import ConversationChain
 
 from dataclasses import dataclass
 from typing import Literal
-import streamlit as st
 
 from langchain import OpenAI
 from langchain.callbacks import get_openai_callback
 from langchain.chains import ConversationChain
 from langchain.chains.conversation.memory import ConversationSummaryMemory
-import streamlit.components.v1 as components
 
 from azure.ai.formrecognizer import DocumentAnalysisClient
-from azure.ai.formrecognizer import FormTrainingClient
 from azure.core.credentials import AzureKeyCredential
 
 import os
