@@ -47,7 +47,7 @@ LegalFlow utilizes Azure technology to conduct document analysis to classify doc
 - James Trent, Azure and Deployment Specialist
 - Richard Brito, Lead Web developer & Designer
 - Ian Ordonez, Project Manager and Legal Researcher
-![Alt text](image.png)  
+<img src="image.png" width="200" height="100">
 
 ## Reflection & Growth
 - Learned:
