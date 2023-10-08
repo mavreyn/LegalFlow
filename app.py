@@ -32,10 +32,10 @@ import os, tempfile
 import streamlit as st
 from langchain.prompts import *
 from langchain import LLMChain
-import configparser
 
 import openai
 import re
+import json
 
 from langchain.embeddings.openai import OpenAIEmbeddings
 
@@ -58,9 +58,6 @@ from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 
 import os
-
-config = configparser.ConfigParser()
-config.read("config.ini")
 
 openai_api_key = st.secrets["OPENAI"]["OPENAI_API_KEY"]
 azure_key = st.secrets["AZURE"]["AZURE_KEY"]
@@ -132,6 +129,7 @@ def main():
         
         result = poller.result()
         st.sidebar.success('Document uploaded successfully')
+        st.sidebar.write(result.content)
     else:
         st.warning('Please use the sidebar to upload a document for further environment, or chat with the LegalFlow assistant for general questions')
 
@@ -139,10 +137,15 @@ def main():
     st.markdown('---')
 
     if file:
-        st.subheader('Document Analysis')
-        st.write('We have extracted some information from your document: ')
+        doc_type = get_type_of_document(result.content)
 
-        st.write(get_type_of_document(result.content))
+        st.subheader('Document Analysis')
+        st.write(f'Number of pages: {len(result.pages)}')
+        st.write(f'Document Type: {doc_type}')
+        st.subheader('Additional Information')
+        kv_pairs = get_important_information(result.content)
+        for key, value in kv_pairs.items():
+            st.write(f'{key}: {value}')
 
     st.markdown('---')
 
@@ -183,15 +186,23 @@ def get_type_of_document(document_text: str) -> str:
 
     """ + "".join([f"{i+1}. {doc_type}\n" for i, doc_type in enumerate(DOCUMENT_TYPES)]) + """\nThe document you are given (by the user) has been put through an OCR system to convert it from an image to text. The OCR system is not perfect and there may be some errors in the text. The user will provide all information from the document between triple backticks in their prompt.
     
-    Your answer should be just a single integer response. Here is an example:
+    As you walk through the document, take note of some of the information that you see. Make sure you identify the most important parts of the document. Look at important structures that you find and repeated words and phrases throughout the documents.
+
+    Here are some observations that may help in the decision making process:
+    - If a document contains "dear sir or madam" it is likely a correspondance
+    - If a document has much information pertaining to physicians, Medicare, Medicaid, CT Scans, or the like, it is likely a medical record
+    - If a document contains a reporting number, a date of incident, or a police officer's name, or a person record, it is likely a police report
+    - If a document contains a judge's name, a case number, or a court name, it is likely a court order
+
+    Make sure to think aloud as you make your solution. After you finish thinking aloud, put your final answer between <<< >>> as it is written above. Only use the options listed above. Here is an example of your process:
+    
     
     User: ```<<<DOCUMENT INFORMATION>>>```
-    AI Agent: 4
+    AI Agent: In this document, I see information related to Federal Health 
+Insurance Portability and Accountability Act (HIPAA) as well as the name of a healthcare provider. I do see the token 'correspondance' in this document, however, it is in the context of records that need to be send to the patient. I believe this document is a medical record. <<<Medical Record>>>
     
-    User: ```<<<DOCUMENT2 INFORMATION>>>```
-    AI Agent: 2
-    
-    Ensure you follow proper formatting as you use your best judgement to classify the document."""
+    Ensure you follow proper formatting as you use your best judgement to classify the document.
+    """
 
     prompt = ChatPromptTemplate.from_messages([
         SystemMessagePromptTemplate.from_template(template),
@@ -206,14 +217,48 @@ def get_type_of_document(document_text: str) -> str:
 
     response = chain.run(document_text=document_text)
     try:
-        st.write(response)
-        response = int(re.search(r'\d', response).group(0)) # Convert to int
-        response = DOCUMENT_TYPES[response - 1]             # Convert to document type
+        response = re.search(r'<<<(.+?)>>>', response).group(1) # Get the text between <<< >>>
+        return response
     except:
-        pass
+        return response[-3:]
+
+
+
+def get_important_information(document_text: str):
+    template = """You are an AI legal agent that is working at an injury law firm to classify certain documents. You have been given a legal document and you need to extract important information from it. Keep in mind that the documents may be Medical Records, Medical Bills, Correspondance, Police Reports, or Court Orders. The document you are given (by the user) has been put through an OCR system to convert it from an image to text. The OCR system is not perfect and there may be some errors in the text. In addition, the text is a single string of tokens, however everything is relatively well-ordered you need to put the correct pieces of information together. The user will provide all information from the document between triple backticks in their prompt.
+
+    Use this knowledge to get the pieces of information you believe are necessary. Don't forget to think aloud as you go through the document. Here is an example of your process:
+
+    User: ```<<<DOCUMENT INFORMATION>>>```
+    Agent: Since this document is a Medical Record, there may not be explicit key value pairs here. However, I will get any information that I can. The document does give some information about the attn (attorney) as well as the following healthcare provider. I will parse that information and create a json
+    <<<{"attn": "Preston Blair", "healthcare_provider": {"name": "MD Now Medical Center - West Flagler", "Address": "20 N Orange Ave, Suite 1600, Orlando, FL 32801", "Phone": "813-223-5505"}}>>>
+
+    USER: ```<<<DOCUMENT2 INFORMATION>>>```
+    Agent: Since I know this is a police report, I will look for any possible key value pairs related to injury and severity. I want to gather not just basic data, but also data that may help the other agents estimate the value of the case and help deliver a possible solution to the client. In my json, I will include the following basic pieces of information that I see: the date, the billing date for this particular item, the name of the source provider, the name of the patient. More importantly, I see information about how her injury occurred, the type of injury, and the treatment that she received. I will include all of this information in my json as well since this is information that will help to steer their solution and support for our client in the right direction.
+    
+    <<<{"due date": "11/13/2021", "billing_date": "10/14/2021", "medical_record_provider": {"name": "C00053 MD Now Medical Centers Inc", "Address": "2007 PALM BEACH LAKES BLVD, WEST PALM BEACH, FL 33409"}, "patient": {"name": "Robert Moore", "dob": "02/18/1981"}, "injury": {"date": "04/22/2021", "type": "car accident", "description": "Struck by another car from driver side while in passenger seat."}}>>>
+
+
+    Your jsons may be much longer than the examples provided. Remember, we are looking for information that it most important for the other agents to help create solutions for our clients. Please format your output as a json at the end of your thought between <<< >>> with proper key value pairs."""
+
+    prompt = ChatPromptTemplate.from_messages([
+        SystemMessagePromptTemplate.from_template(template),
+        HumanMessagePromptTemplate.from_template("```{document_text}```"),
+    ])
+
+    chain = LLMChain(
+        llm=OpenAI(temperature=0, openai_api_key=openai_api_key,
+        model_name='gpt-3.5-turbo'),
+        prompt=prompt
+    )
+
+    response = chain.run(document_text=document_text)
+    try:
+        response = json.loads(re.search(r'<<<(.+?)>>>', response).group(1)) # Get the text between <<< >>>
+    except:
+        response = {"status": "error"}
+
     return response
-
-
 
 if __name__ == '__main__':
     main()
