@@ -1,37 +1,31 @@
 .chat-row {
-  background-color: red;
-  display: flex;
-  margin: 5px;
+  padding: 10px 15px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  max-width: 75%;
+  clear: both;
+}
+
+.chat-row.llm {
+  background-color: rgb(255, 193, 7);
+  border: 1px solid #fdeb0e;  
+  color: #132a4e;             
+  float: left;
+}
+
+.chat-row.human-bubble {
+  background-color: #505050; 
+  border: 1px solid #404040;  
+  color: white;               
+  float: right;
+}
+
+.chat-row:hover {
+  transform: scale(1.02);
 }
 
 .row-reverse {
   flex-direction: row-reverse;
-}
-
-.human-bubble {
-  background: linear-gradient(135deg, rgb(0, 178, 255), rgb(8, 64, 143));
-}
-.chat-row {
-    padding: 10px 15px;
-    border-radius: 20px;
-    margin-bottom: 8px;
-    max-width: 75%;
-    clear: both;
-}
-
-.chat-row.llm {
-    background-color: #e1f5fe;  
-    border: 1px solid #bbdefb; 
-}n 
-
-.chat-row.human-bubble {
-    background-color: #c8e6c9; 
-    border: 1px solid #a5d6a7; 
-    float: right;
-}
-
-.chat-row:hover {
-    transform: scale(1.02);
 }
 
 .avatar {
@@ -51,6 +45,7 @@ body {
   flex-direction: column;
   font-family: "Open Sans", sans-serif;
 }
+
 .chat-bubble {
     padding: 10px 15px;
     border-radius: 20px;
