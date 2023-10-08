@@ -26,7 +26,7 @@ Github:
 https://github.com/mavreyn/LegalFlow
 
 Deployment:
-http://legalflow.streamlit.app
+http://legal-flow.streamlit.app
 
 '''
 
@@ -197,7 +197,7 @@ def main():
         result = poller.result()
         st.sidebar.success('Document uploaded successfully')
     else:
-        st.warning('Please use the sidebar to upload a document for further environment, or chat with the LegalFlow assistant for general questions')
+        st.warning('Please use the sidebar to upload a document for classification, or continue to interact with LegalFlowAI below')
 
     if file:
         st.markdown('---')
