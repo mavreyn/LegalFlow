@@ -7,16 +7,18 @@
 }
 
 .chat-row.llm {
-  background-color: rgb(255, 193, 7);
+  background-color: rgba(255, 203, 48, 0.964);
   border: 1px solid #fdeb0e;  
-  color: #132a4e;             
+  color: #000000;
+  font-weight: 700;             
   float: left;
 }
 
 .chat-row.human-bubble {
   background-color: #505050; 
   border: 1px solid #404040;  
-  color: white;               
+  color: white;
+  font-weight: 700;               
   float: right;
 }
 

@@ -90,7 +90,51 @@ def initialize_session_state():
         st.session_state["history"] = []
     if "conversation" not in st.session_state:
         llm = OpenAI(temperature=0, openai_api_key=openai_api_key, model_name="gpt-3.5-turbo")
-        st.session_state.conversation = ConversationChain(llm=llm, memory=ConversationSummaryMemory(llm=llm))
+        st.session_state.conversation = ConversationChain(
+            llm=llm,
+            memory=ConversationSummaryMemory(llm=llm),
+            prompt=PromptTemplate(input_variables=['history', 'input'], template="""You are 
+LegalFlowAI, an AI agent at an injury law firm that is designed to help clients with any questions they may have regarding legal processes. You play a very important role in helping confort and inform our clients on questions they may have about documents, processes, and the like. 
+
+It is important that you respond in a formal, polite, and comforting manner. Recognize that these individuals need all the resources they can get and you are here to help them. You are not a lawyer, but you are a legal assistant that can help them with any questions they may have. If they have questions that do not pertain to legality and legal process, please politefully decline to answer the question and redirect the conversation to legal topics. Please make sure to continue to interact with the client and keep asking questions to gain information; end every response with another question to the user. You can ask questions about the client's situation, the documents they have, and the like. Please make sure to keep the conversation going and make sure to ask questions that will help you understand the client's situation.
+                                                          
+Consider the following queries and responses between the triple backticks and how the conversation continues after each response:
+
+```
+CONVERSATION 1:
+
+Individual: I was wondering if you knew the process for filing for a divorce?
+LegalFlowAI: Of course, I would be happy to help you with that. The process for divorce depends on the state you are in. What state are you in?
+Individual: I am in California.
+LegalFlowAI: Great, I can help you with that. In California, you need to file a petition for divorce. You can find the form here: https://www.courts.ca.gov/documents/fl100.pdf. You will need to fill out the form and file it with the court. You will also need to serve the form to your spouse. You can find more information here: https://www.courts.ca.gov/1032.html. Are you experiencing servere domestic violence?
+Individual: ...
+
+CONVERSATION 2:
+                                            
+Individual: I am ready to proceed with a legal claim, What's the next step?
+LegalFlowAI: I would be happy to help you with that. What kind of legal claim are you looking to proceed with?
+Individual: ...
+```
+                                            
+In addition to the above, here are some questions that clients have asked agents int he past. Be prepared to give thorough, genuine, and thoughtful conversation based on the following client texts between triple backticks:
+
+```
+- I was recently in a car accident and need an attorney
+- I received my MRI results back and they were positive. What are the next steps?
+- I'm experiencing pain and discomfort after the accident. What should I do?
+- I have evidence of the other driver's negligence
+- I have questions about the legal process for personal injury cases
+- I need to understand the legal timeline for my case
+- I'm experiencing emotional distress after the accident
+```
+                                  
+Here is your conversation, continue it with the client:
+```
+{history}
+                                  
+{input}
+```""")
+            )
 
 
 def on_click_callback():
@@ -109,13 +153,10 @@ def main():
     initialize_session_state()
     load_css()
     
-
-
     
     # Begin the Streamlit App Here
     st.markdown("<h1 style='text-align: center; color: #ffc107;'>LegalFlow</h1>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>Your assistant for document analysis and legal advice.</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>LegalFlow was created by students participating in the UCF Knight Hacks 2023 Hackathon to help with document classification and extraction of information.</p>", unsafe_allow_html=True)
 
     # Do the sidebar here
     st.sidebar.title('Upload a Legal Document')
@@ -134,24 +175,17 @@ def main():
         
         result = poller.result()
         st.sidebar.success('Document uploaded successfully')
-        st.sidebar.write(result.content)
     else:
         st.warning('Please use the sidebar to upload a document for further environment, or chat with the LegalFlow assistant for general questions')
 
     if file:
+        st.markdown('---')
         doc_type = get_type_of_document(result.content)
-
-        st.subheader('Document Analysis')
-        st.write(f'Number of pages: {len(result.pages)}')
-        st.write(f'Document Type: {doc_type}')
-        st.subheader('Additional Information')
-        kv_pairs = get_important_information(result.content)
-        for key, value in kv_pairs.items():
-            st.write(f'{key}: {value}')
+        st.markdown(f"<h3 style='text-align: center;'>Document Type: {doc_type}</h3>", unsafe_allow_html=True)
 
     st.markdown('---')
 
-    st.write('Hello, I am LegalFlow and I am here to help you with any questions you may have about your legal documents. Please use the chatbox below to ask any questions you may have.')
+    st.write('Hello, I am LegalFlowAI and I am here to help you with any questions you may have about your legal documents. Please use the chatbox below to ask any questions you may have.')
     chat_palceholder = st.container()
     prompt_placeholder = st.form("Chat-form")
 
@@ -167,20 +201,6 @@ def main():
         cols[0].text_input("Chat - Please Enter to submit", value="", key='human_prompt')
         cols[1].form_submit_button("Send", type="primary", on_click=on_click_callback)
 
-def get_vectorstore(source_doc):
-    # Save uploaded file temporarily to disk, load and split the file into pages, delete temp file
-    with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
-        tmp_file.write(source_doc.read())
-
-    loader = PyPDFLoader(tmp_file.name)
-    pages = loader.load_and_split()
-    os.remove(tmp_file.name)
-
-    # Create embeddings for the pages and insert into Chroma database
-    embeddings=OpenAIEmbeddings(openai_api_key=openai_api_key)
-    vectordb = Chroma.from_documents(pages, embeddings)
-
-    return vectordb
 
 def get_type_of_document(document_text: str) -> str:
     template = """You are an AI legal agent that is working at an injury law firm to classify certain documents. You are given a document and you need to classify it into one of the following categories:\n
@@ -217,49 +237,12 @@ Insurance Portability and Accountability Act (HIPAA) as well as the name of a he
     )
 
     response = chain.run(document_text=document_text)
+    st.write(response)
     try:
         response = re.search(r'<<<(.+?)>>>', response).group(1) # Get the text between <<< >>>
         return response
     except:
-        return response[-3:]
-
-
-
-def get_important_information(document_text: str):
-    template = """You are an AI legal agent that is working at an injury law firm to classify certain documents. You have been given a legal document and you need to extract important information from it. Keep in mind that the documents may be Medical Records, Medical Bills, Correspondance, Police Reports, or Court Orders. The document you are given (by the user) has been put through an OCR system to convert it from an image to text. The OCR system is not perfect and there may be some errors in the text. In addition, the text is a single string of tokens, however everything is relatively well-ordered you need to put the correct pieces of information together. The user will provide all information from the document between triple backticks in their prompt.
-
-    Use this knowledge to get the pieces of information you believe are necessary. Don't forget to think aloud as you go through the document. Here is an example of your process:
-
-    User: ```<<<DOCUMENT INFORMATION>>>```
-    Agent: Since this document is a Medical Record, there may not be explicit key value pairs here. However, I will get any information that I can. The document does give some information about the attn (attorney) as well as the following healthcare provider. I will parse that information and create a json
-    <<<{"attn": "Preston Blair", "healthcare_provider": {"name": "MD Now Medical Center - West Flagler", "Address": "20 N Orange Ave, Suite 1600, Orlando, FL 32801", "Phone": "813-223-5505"}}>>>
-
-    USER: ```<<<DOCUMENT2 INFORMATION>>>```
-    Agent: Since I know this is a police report, I will look for any possible key value pairs related to injury and severity. I want to gather not just basic data, but also data that may help the other agents estimate the value of the case and help deliver a possible solution to the client. In my json, I will include the following basic pieces of information that I see: the date, the billing date for this particular item, the name of the source provider, the name of the patient. More importantly, I see information about how her injury occurred, the type of injury, and the treatment that she received. I will include all of this information in my json as well since this is information that will help to steer their solution and support for our client in the right direction.
-    
-    <<<{"due date": "11/13/2021", "billing_date": "10/14/2021", "medical_record_provider": {"name": "C00053 MD Now Medical Centers Inc", "Address": "2007 PALM BEACH LAKES BLVD, WEST PALM BEACH, FL 33409"}, "patient": {"name": "Robert Moore", "dob": "02/18/1981"}, "injury": {"date": "04/22/2021", "type": "car accident", "description": "Struck by another car from driver side while in passenger seat."}}>>>
-
-
-    Your jsons may be much longer than the examples provided. Remember, we are looking for information that it most important for the other agents to help create solutions for our clients. Please format your output as a json at the end of your thought between <<< >>> with proper key value pairs."""
-
-    prompt = ChatPromptTemplate.from_messages([
-        SystemMessagePromptTemplate.from_template(template),
-        HumanMessagePromptTemplate.from_template("```{document_text}```"),
-    ])
-
-    chain = LLMChain(
-        llm=OpenAI(temperature=0, openai_api_key=openai_api_key,
-        model_name='gpt-3.5-turbo'),
-        prompt=prompt
-    )
-
-    response = chain.run(document_text=document_text)
-    try:
-        response = json.loads(re.search(r'<<<(.+?)>>>', response).group(1)) # Get the text between <<< >>>
-    except:
-        response = {"status": "error"}
-
-    return response
+        return "".join([f'{x} ' for x in response.split()[-3:]])
 
 if __name__ == '__main__':
     main()
