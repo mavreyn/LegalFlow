@@ -1,4 +1,4 @@
-# LegalFlow - An AI Legal Agent & Assistant
+# LegalFlow - AI Legal Agent & Assistant
 
 ## Table of Contents
 
@@ -59,3 +59,7 @@ LegalFlow utilizes Azure technology to conduct document analysis to classify doc
 - Ian Ordonez, Project Manager and Legal Researcher
 - Maverick Reynolds, Lead Langchain & Streamlit developer
 - James Trent, Azure and Deployment Specialist
+
+--------
+
+![HackathonFun](UCFHackathonCollage.jpg)
