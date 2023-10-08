@@ -1,29 +1,32 @@
 '''
-Main file for the Streamlit app.
+LegalFlow
+October 08, 2023
+- Maverick Reynolds
+- Ian Ordonez
+- James Trent
+- Richard Brito 
 
-Maverick, Ian, Jay, Richard
-10.07.2023
+LegalFlow is designed to connect clients with the associates of the legal firm by helping to inform clients of the services they provides as well as the next steps of the legal processes clients are involved with. LegalFlow also helps expedite administrative tasks of agents at Morgan & Morgan so that more time can be given to the associated to connect with their client.
 
+Currenty, LegalFlow features a ChatBot designed to engage with clients who have questions regarding legal inquiries and processes for their case or general questions. LegalFlow also features a document analysis system that can classify documents into major categories based on their content. The document analysis system is designed to help Morgan & Morgan agents organize information as they continue to work with their clients.
 
-TODO
-- Use atlas instead (creative use of MongoDB Atlas)
-- Information below
-- 3 Columns with information
-- Google cloud to generate PDF?
-- Information to help the user
-- Any cloud computing to help generate PDFs?
-- Edit Theme for Morgan Colors
-- Py thing to have langchain repeat until correct format
+With more time, LegalFlow will be able to provide clients with a more seamless and personalized experience with the firm's resources and associates. LegalFlow's Chatbot is available to connect with clients 24/7 and will be able to prepare preliminary documentation for clients to sign and send to the firm. We believe that incorporation of recent advancements in NLP, AI, and CV will help LegalFlow become a powerful tool for Morgan & Morgan to help clients connect with their associates and for associates to best serve the individuals and families in need.
 
-- Questions necessary for the ChatBot
+---
 
-- Chat with our virtual assistant, upload a document for more context
+App.py is the main file for the LegalFlow application. It uses dependencies from Langchain, Azure, and Streamlit to create a deployment for the Morgan & Morgan challenge at the 2023 Knight Hacks Hackathon.
 
-https://www.youtube.com/watch?v=6fs80o7Xm4I&ab_channel=FaniloAndrianasolo
+Dependencies and technologies
+- Langchain
+- Azure AI Document Intelligence
+- OpenAI GPT-3.5
+- Streamlit
 
-- Uploaded documents
-How homeless do I look?
-- Recommended Questions
+Github:
+https://github.com/mavreyn/LegalFlow
+
+Deployment:
+http://legalflow.streamlit.app
 
 '''
 
@@ -32,6 +35,8 @@ import os, tempfile
 import streamlit as st
 from langchain.prompts import *
 from langchain import LLMChain
+from gtts import gTTS
+from io import BytesIO
 
 import openai
 import re
@@ -86,6 +91,8 @@ class Message:
 
 
 def initialize_session_state():
+    if "accessibility_audio" not in st.session_state:
+        st.session_state["accessibility_audio"] = False
     if "history" not in st.session_state:
         st.session_state["history"] = []
     if "conversation" not in st.session_state:
@@ -147,10 +154,13 @@ def on_click_callback():
     st.session_state["history"].append(
         Message("llm", llm_response)
     )
-    st.session_state["human_prompt"] = ""
 
-
-    
+    if st.session_state["accessibility_audio"]:
+        st.sidebar.subheader('Audio Transcription')
+        sound_file = BytesIO()
+        tts = gTTS(llm_response, lang='en')
+        tts.write_to_fp(sound_file)
+        st.sidebar.audio(sound_file, format='audio/mp3')
 
 
 def main():
@@ -160,9 +170,16 @@ def main():
     
     # Begin the Streamlit App Here
     st.markdown("<h1 style='text-align: center; color: #ffc107;'>LegalFlow</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center;'>Your assistant for document analysis and legal advice.</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Your assistant for document analysis & legal guidance.</h3>", unsafe_allow_html=True)
 
     # Do the sidebar here
+    st.sidebar.title('Accessibility')
+    use_accessibility = st.sidebar.checkbox('Enable Text to Speech Responses')
+    if use_accessibility:
+        st.session_state["accessibility_audio"] = True
+    else:
+        st.session_state["accessibility_audio"] = False
+
     st.sidebar.title('Upload a Legal Document')
     file = st.sidebar.file_uploader("Upload a file here", type=["pdf", "png", "jpg", "jpeg"])
 
@@ -202,11 +219,22 @@ def main():
             st.markdown(div, unsafe_allow_html=True)
 
     with prompt_placeholder:
-        cols = st.columns((8, 1))
-    with cols[0]:
         st.text_input("LegalFlowAI  -  Begin a chat", value="", key='human_prompt')
-    with cols[1]:
-        st.form_submit_button("Send", type="primary", on_click=on_click_callback)
+        c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
+        with c1:
+            pass
+        with c2:
+            pass
+        with c3:
+            pass
+        with c4:
+            pass
+        with c5:
+            pass
+        with c6:
+            pass
+        with c7:
+            st.form_submit_button("Send", type="primary", on_click=on_click_callback)
 
 
 def get_type_of_document(document_text: str) -> str:
@@ -244,12 +272,15 @@ Insurance Portability and Accountability Act (HIPAA) as well as the name of a he
     )
 
     response = chain.run(document_text=document_text)
-    st.write(response)
     try:
         response = re.search(r'<<<(.+?)>>>', response).group(1) # Get the text between <<< >>>
-        return response
     except:
-        return "".join([f'{x} ' for x in response.split()[-3:]])
+        response = "".join([f'{x} ' for x in response.split()[-3:]])
+    
+    if response[1] == ' ':
+        response = response[2:]
+    
+    return response
 
 
 if __name__ == '__main__':
