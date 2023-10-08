@@ -78,6 +78,7 @@ def load_css():
         st.markdown(css, unsafe_allow_html=True)
 
 
+
 @dataclass
 class Message:
     origin: Literal["human", "llm"]
@@ -106,11 +107,13 @@ def on_click_callback():
 
 def main():
     initialize_session_state()
+
+
     
     # Begin the Streamlit App Here
-    st.title('LegalFlow')
-    st.subheader('Your assistant for document analysis and legal advice.')
-    st.write('LegalFlow was created by students participating in the UCF Knight Hacks 2023 Hackathon to help with document classification and extraction of information.')
+    st.markdown("<h1 style='text-align: center; color: #ffc107;'>LegalFlow</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Your assistant for document analysis and legal advice.</h3>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>LegalFlow was created by students participating in the UCF Knight Hacks 2023 Hackathon to help with document classification and extraction of information.</p>", unsafe_allow_html=True)
 
     # Do the sidebar here
     st.sidebar.title('Upload a Legal Document')
@@ -132,9 +135,6 @@ def main():
         st.sidebar.write(result.content)
     else:
         st.warning('Please use the sidebar to upload a document for further environment, or chat with the LegalFlow assistant for general questions')
-
-              
-    st.markdown('---')
 
     if file:
         doc_type = get_type_of_document(result.content)
