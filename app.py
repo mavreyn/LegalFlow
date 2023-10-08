@@ -185,7 +185,8 @@ def main():
 
     st.markdown('---')
 
-    st.write('Hello, I am LegalFlowAI and I am here to help you with any questions you may have about your legal documents. Please use the chatbox below to ask any questions you may have.')
+    st.write('Hello, I am LegalFlowAI and I am here to help you with any questions you may have about your legal documents or legal procedures. Please use the chatbox below to ask any questions you may have.')
+    st.write('')
     chat_palceholder = st.container()
     prompt_placeholder = st.form("Chat-form")
 
@@ -198,7 +199,7 @@ def main():
 
     with prompt_placeholder:
         cols = st.columns((8, 1))
-        cols[0].text_input("Chat - Please Enter to submit", value="", key='human_prompt')
+        cols[0].text_input("LegalFlowAI  -  Begin a chat", value="", key='human_prompt')
         cols[1].form_submit_button("Send", type="primary", on_click=on_click_callback)
 
 
