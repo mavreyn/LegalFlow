@@ -103,11 +103,11 @@ def on_click_callback():
     st.session_state["history"].append(
         Message("llm", llm_response)
     )
-    
 
 
 def main():
     initialize_session_state()
+    load_css()
     
 
 
@@ -158,7 +158,7 @@ def main():
     with chat_palceholder:
         for chat in st.session_state.history:
             div = f"""
-                <div class="chat-row {'' if chat.origin == 'llm' else 'row-reverse human-bubble'}">{chat.message}</div>
+                <div class="chat-row {'llm' if chat.origin == 'llm' else 'human-bubble'}">{chat.message}</div>
             """
             st.markdown(div, unsafe_allow_html=True)
 
