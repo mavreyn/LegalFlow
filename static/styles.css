@@ -22,7 +22,7 @@
 .chat-row.llm {
     background-color: #e1f5fe;  
     border: 1px solid #bbdefb; 
-}
+}n 
 
 .chat-row.human-bubble {
     background-color: #c8e6c9; 
@@ -67,6 +67,7 @@ body {
     background-color: #0099ff;
     color: white;
 }
+
 
 
 
