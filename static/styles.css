@@ -48,6 +48,14 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
+.chat-container {
+  max-height: 500px;  
+  overflow-y: auto;  
+  width: 100%;
+}
+
+
+
 .chat-bubble {
     padding: 10px 15px;
     border-radius: 20px;
@@ -64,7 +72,4 @@ body {
     background-color: #0099ff;
     color: white;
 }
-
-
-
 
