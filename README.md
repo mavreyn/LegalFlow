@@ -1,4 +1,4 @@
-# Legal Flow - An AI Legal Document Classification Assistant
+# LegalFlow - An AI Legal Agent & Assistant
 
 ## Table of Contents
 
@@ -28,19 +28,20 @@ LegalFlow utilizes Azure technology to conduct document analysis to classify doc
     - Inquisitive in nature
 - Web Interface
     - User-friendly design powered by Streamlit, ensuring accessibility and smooth navigation
+- Accessibility Options
+    - Text to Speech (TTS) service for ChatBot (LegalFlowAI) responses
 
 ## Usage
-- Law firm clients can use to identify documents
+- Law firm clients can use to identify and classify documents
 - Law firms can utilize this tool internally to sort and filter through legal documents
-- Clients can receive generalized guidance & assistance through conversation
+- Clients may receive generalized guidance & assistance through conversation
 
 ## Technology & Dependencies
-- Azure Document Intelligence
-- Langchain
+- Azure AI Document Intelligence
+- LangChain
 - Streamlit
-- Chroma
 - OpenAI
-- Python
+- gTTS
 
 ## Reflection & Growth
 - Learned:
@@ -49,14 +50,12 @@ LegalFlow utilizes Azure technology to conduct document analysis to classify doc
     - Azure integration
 - Room to expand
     - Automation of tasks through chatbot query (such as correspondence & drafting of legal docuements)
-    - Better accessibility, such as,
-        - Text to Speech
-        - Multilingual
-    - Improve model by enhancing OCR 
+    - More accessibility options such as
+        - Multilinguality
+    - Improve model by enhancing OCR (incorporate formatting, spacing, tables...)
 
 ## Development and Contribution
 - Richard Brito, Lead Web developer & Designer
 - Ian Ordonez, Project Manager and Legal Researcher
 - Maverick Reynolds, Lead Langchain & Streamlit developer
 - James Trent, Azure and Deployment Specialist
-![Alt text](image.png)
