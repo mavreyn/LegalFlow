@@ -1,13 +1,72 @@
 .chat-row {
-    background-color: red;
-    display: flex;
-    margin: 5px;
+  background-color: red;
+  display: flex;
+  margin: 5px;
 }
 
 .row-reverse {
-    flex-direction: row-reverse;
+  flex-direction: row-reverse;
 }
 
 .human-bubble {
-    background: linear-gradient(135deg, rgb(0, 178, 255), rgb(8, 64, 143));
+  background: linear-gradient(135deg, rgb(0, 178, 255), rgb(8, 64, 143));
 }
+.chat-row {
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    max-width: 75%;
+    clear: both;
+}
+
+.chat-row.llm {
+    background-color: #e1f5fe;  
+    border: 1px solid #bbdefb; 
+}
+
+.chat-row.human-bubble {
+    background-color: #c8e6c9; 
+    border: 1px solid #a5d6a7; 
+    float: right;
+}
+
+.chat-row:hover {
+    transform: scale(1.02);
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #132a4e;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  font-family: "Open Sans", sans-serif;
+}
+.chat-bubble {
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin-bottom: 5px;
+    display: inline-block;
+    max-width: 80%;
+}
+
+.bot-bubble {
+    background-color: #e6e6e6;
+}
+
+.human-bubble {
+    background-color: #0099ff;
+    color: white;
+}
+
+
+
