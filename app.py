@@ -103,10 +103,12 @@ def on_click_callback():
     st.session_state["history"].append(
         Message("llm", llm_response)
     )
+    
 
 
 def main():
     initialize_session_state()
+    
 
 
     
@@ -149,7 +151,7 @@ def main():
 
     st.markdown('---')
 
-    st.write('Hello, I am LegalFlowChat and I am here to help you with any questions you may have about your legal documents. Please use the chatbox below to ask any questions you may have.')
+    st.write('Hello, I am LegalFlow and I am here to help you with any questions you may have about your legal documents. Please use the chatbox below to ask any questions you may have.')
     chat_palceholder = st.container()
     prompt_placeholder = st.form("Chat-form")
 
@@ -161,9 +163,8 @@ def main():
             st.markdown(div, unsafe_allow_html=True)
 
     with prompt_placeholder:
-        st.markdown("**Chat** - _Press Enter to submit_")
-        cols = st.columns((6, 1))
-        cols[0].text_input("Chat", value="Hello", key='human_prompt')
+        cols = st.columns((8, 1))
+        cols[0].text_input("Chat - Please Enter to submit", value="", key='human_prompt')
         cols[1].form_submit_button("Send", type="primary", on_click=on_click_callback)
 
 def get_vectorstore(source_doc):
