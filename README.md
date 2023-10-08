@@ -42,13 +42,6 @@ LegalFlow utilizes Azure technology to conduct document analysis to classify doc
 - OpenAI
 - Python
 
-## Development and Contribution
-- Maverick Reynolds, Lead Langchain & Streamlit developer
-- James Trent, Azure and Deployment Specialist
-- Richard Brito, Lead Web developer & Designer
-- Ian Ordonez, Project Manager and Legal Researcher
-<img src="image.png" width="200" height="100">
-
 ## Reflection & Growth
 - Learned:
     - Semantic Kernel (First approach)
@@ -60,3 +53,10 @@ LegalFlow utilizes Azure technology to conduct document analysis to classify doc
         - Text to Speech
         - Multilingual
     - Improve model by enhancing OCR 
+
+## Development and Contribution
+- Richard Brito, Lead Web developer & Designer
+- Ian Ordonez, Project Manager and Legal Researcher
+- Maverick Reynolds, Lead Langchain & Streamlit developer
+- James Trent, Azure and Deployment Specialist
+![Alt text](image.png)
