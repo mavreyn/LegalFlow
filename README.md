@@ -43,10 +43,11 @@ LegalFlow utilizes Azure technology to conduct document analysis to classify doc
 - Python
 
 ## Development and Contribution
-- Maverick Reynolds, Lead Langchain developer
-- James Trent, Azure and deployment
+- Maverick Reynolds, Lead Langchain & Streamlit developer
+- James Trent, Azure and Deployment Specialist
 - Richard Brito, Lead Web developer & Designer
-- Ian Ordonez, Developer and legal interpolation  
+- Ian Ordonez, Project Manager and Legal Researcher
+![Alt text](image.png)  
 
 ## Reflection & Growth
 - Learned:
